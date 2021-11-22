@@ -1,0 +1,148 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+library(rtweet)
+library(ggplot2)
+library(dplyr)
+library(tidytext)
+library(stringr)
+library(tibble)
+library(tidyverse)
+library(syuzhet)
+library(wordcloud2)
+library(tm)
+library(plotly)
+library(qdapRegex) 
+```
+
+
+
+```{r}
+nike = read.csv("justdoit_tweets.csv", header = T)
+```
+
+
+
+
+```{r}
+#build corpus (collection of documents)
+library(tm)
+corpus = iconv(nike$tweet_full_text, to = "utf-8-mac")
+corpus = Corpus(VectorSource(corpus))
+```
+
+
+
+```{r}
+corpus = tm_map(corpus, tolower)
+corpus = tm_map(corpus, removePunctuation)
+corpus = tm_map(corpus, removeNumbers)
+
+```
+
+```{r}
+new_stops = c("justdoit","nike", stopwords("english"))
+```
+
+```{r}
+new_stops = c("justdoit","nike", stopwords("english"))
+cleanset = tm_map(corpus, removeWords, new_stops)
+cleanset = tm_map(corpus, removeWords, new_stops)
+removeURL = removeURL <- function(x) gsub('http[[:alnum:]]*', '', x)
+cleanset = tm_map(cleanset, content_transformer(removeURL))
+#remove whitespace
+cleanset <- tm_map(cleanset, stripWhitespace)
+inspect
+```
+
+
+
+
+```{r}
+cleanset = tm_map(corpus, removeWords, stopwords('english'))
+cleanset = tm_map(corpus, removeWords, stopwords('english'))
+removeURL = removeURL <- function(x) gsub('http[[:alnum:]]*', '', x)
+cleanset = tm_map(cleanset, content_transformer(removeURL))
+#remove whitespace
+cleanset <- tm_map(cleanset, stripWhitespace)
+inspect
+```
+
+
+
+```{r}
+#term document matrix - convert to structured data, rows and columns
+tdm <- TermDocumentMatrix(cleanset)
+tdm
+tdm <- as.matrix(tdm)
+tdm[1:10, 1:20]
+```
+
+
+
+```{r}
+library(wordcloud)
+w <- sort(rowSums(tdm), decreasing = TRUE)
+set.seed(222)
+wordcloud(words = names(w),
+          freq = w,
+          max.words = 150,
+          random.order = F,
+          min.freq = 5,
+          colors = brewer.pal(8, 'Dark2'),
+          scale = c(5, 0.3),
+          rot.per = 0)
+```
+
+
+```{r}
+library(wordcloud2)
+w <- data.frame(names(w), w)
+colnames(w) <- c('word', 'freq')
+wordcloud2(w,
+           size = 0.7,
+           shape = 'cardioid',
+           rotateRatio = 0.5,
+           minSize = 1)
+```
+```{r}
+library(wordcloud2)
+```
+
+
+
+#Sentiment Analysis
+```{r}
+nike_1= read.csv("just_doit_tweets.csv", header = T)
+tweets = iconv(nike_1$tweet_full_text, to = "utf-8-mac")
+#obtain sentiment scores
+#s <- get_nrc_sentiment(tweets1)
+#head(s)
+# corpus = iconv(nike$tweet_full_text, to = "utf-8-mac")
+```
+```{r}
+
+```
+
+```{r}
+s = get_nrc_sentiment (tweets)
+
+#bar plot
+barplot(colSums(s),
+        las =2,
+        col = rainbow(10),
+        ylab= 'Count',
+        main = 'Sentiment Scores for #JustDoIt Tweets')
+```
+
+```{r}
+library(syzuhet)
+library(lubridate)
+library(ggplot2)
+library(scales)
+library(reshape2)
+library(dplyr)
+```
+
